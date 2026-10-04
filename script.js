@@ -1,68 +1,53 @@
-const sentenceInput = document.getElementById("sentenceInput");
-const checkBtn = document.getElementById("checkBtn");
+const inputText = document.getElementById("textInput");
+const correctBtn = document.getElementById("correctBtn");
 const clearBtn = document.getElementById("clearBtn");
-
 const loading = document.getElementById("loading");
 const result = document.getElementById("result");
+const originalText = document.getElementById("originalText");
 const correctedText = document.getElementById("correctedText");
-const suggestions = document.getElementById("suggestions");
 
-checkBtn.addEventListener("click", async () => {
-    const sentence = sentenceInput.value.trim();
+correctBtn.addEventListener("click", async () => {
+    const text = inputText.value.trim();
 
-    if (!sentence) {
+    if (!text) {
         alert("Please enter a sentence.");
         return;
     }
 
     loading.classList.remove("hidden");
     result.classList.add("hidden");
+    correctBtn.disabled = true;
 
     try {
-        const response = await fetch("http://localhost:5000/api/correct", {
+        const response = await fetch("/api/correct", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                text: sentence
-            })
+            body: JSON.stringify({ text })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || "API request failed");
+            throw new Error(data.error || "AI correction failed.");
         }
 
+        originalText.textContent = data.original;
         correctedText.textContent = data.corrected;
-
-        suggestions.innerHTML = "";
 
         result.classList.remove("hidden");
 
     } catch (error) {
-        console.error("Error:", error);
-
-        correctedText.textContent =
-            "Unable to connect to the AI correction API.";
-
-        suggestions.textContent =
-            "Make sure the backend server is running.";
-
-        result.classList.remove("hidden");
-
+        console.error("API Error:", error);
+        alert("Unable to connect to the AI correction API.");
     } finally {
         loading.classList.add("hidden");
+        correctBtn.disabled = false;
     }
 });
 
 clearBtn.addEventListener("click", () => {
-    sentenceInput.value = "";
-
+    inputText.value = "";
     result.classList.add("hidden");
-    loading.classList.add("hidden");
-
-    correctedText.textContent = "";
-    suggestions.innerHTML = "";
 });
