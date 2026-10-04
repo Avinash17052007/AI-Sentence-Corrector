@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sentence Corrector</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <section class="hero">
+            <h1>AI Sentence Corrector</h1>
+
+            <p>
+                Improve your grammar, spelling and sentence structure.
+            </p>
+        </section>
+
+        <section class="corrector-card">
+
+            <label for="sentenceInput">
+                Enter your sentence
+            </label>
+
+            <textarea
+                id="sentenceInput"
+                placeholder="Type or paste your sentence here..."
+            ></textarea>
+
+            <div class="actions">
+
+                <button id="checkBtn">
+                    Check Sentence
+                </button>
+
+                <button id="clearBtn" class="secondary">
+                    Clear
+                </button>
+
+            </div>
+
+            <div id="loading" class="loading hidden">
+                Checking sentence...
+            </div>
+
+            <div id="result" class="result hidden">
+
+                <h2>Result</h2>
+
+                <div id="correctedText"></div>
+
+                <div id="suggestions"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
