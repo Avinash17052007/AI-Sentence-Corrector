@@ -3,17 +3,18 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+// Serve frontend files
+app.use(express.static(__dirname));
+
 app.get("/", (req, res) => {
-    res.json({
-        status: "ONLINE",
-        service: "AI Sentence Corrector API"
-    });
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.post("/api/correct", async (req, res) => {
@@ -78,6 +79,6 @@ app.post("/api/correct", async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Backend running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });
