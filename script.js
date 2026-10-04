@@ -1,13 +1,14 @@
-const inputText = document.getElementById("textInput");
-const correctBtn = document.getElementById("correctBtn");
+const sentenceInput = document.getElementById("sentenceInput");
+const checkBtn = document.getElementById("checkBtn");
 const clearBtn = document.getElementById("clearBtn");
+
 const loading = document.getElementById("loading");
 const result = document.getElementById("result");
-const originalText = document.getElementById("originalText");
 const correctedText = document.getElementById("correctedText");
+const suggestions = document.getElementById("suggestions");
 
-correctBtn.addEventListener("click", async () => {
-    const text = inputText.value.trim();
+checkBtn.addEventListener("click", async () => {
+    const text = sentenceInput.value.trim();
 
     if (!text) {
         alert("Please enter a sentence.");
@@ -16,7 +17,7 @@ correctBtn.addEventListener("click", async () => {
 
     loading.classList.remove("hidden");
     result.classList.add("hidden");
-    correctBtn.disabled = true;
+    checkBtn.disabled = true;
 
     try {
         const response = await fetch("/api/correct", {
@@ -24,7 +25,9 @@ correctBtn.addEventListener("click", async () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ text })
+            body: JSON.stringify({
+                text: text
+            })
         });
 
         const data = await response.json();
@@ -33,21 +36,32 @@ correctBtn.addEventListener("click", async () => {
             throw new Error(data.error || "AI correction failed.");
         }
 
-        originalText.textContent = data.original;
         correctedText.textContent = data.corrected;
+
+        suggestions.textContent = "";
 
         result.classList.remove("hidden");
 
     } catch (error) {
         console.error("API Error:", error);
-        alert("Unable to connect to the AI correction API.");
+
+        alert(
+            "Unable to connect to the AI correction API.\n\n" +
+            "Please try again."
+        );
+
     } finally {
         loading.classList.add("hidden");
-        correctBtn.disabled = false;
+        checkBtn.disabled = false;
     }
 });
 
 clearBtn.addEventListener("click", () => {
-    inputText.value = "";
+    sentenceInput.value = "";
+
+    correctedText.textContent = "";
+    suggestions.textContent = "";
+
     result.classList.add("hidden");
+    loading.classList.add("hidden");
 });
